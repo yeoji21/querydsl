@@ -5,6 +5,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +64,6 @@ public class QuerydslBasicTest {
 
     @Test
     void startQuerydsl(){
-
         Member findMember = queryFactory
                 .select(member)
                 .from(member)
@@ -319,5 +319,18 @@ public class QuerydslBasicTest {
                         .concat(member.age.stringValue()))
                 .from(member).fetch();
         result.forEach(System.out::println);
+    }
+
+    @Test
+    void orderByCase(){
+        NumberExpression<Integer> rankPath = new CaseBuilder().when(member.age.between(0, 20)).then(2)
+                .when(member.age.between(21, 30)).then(1)
+                .otherwise(3);
+
+        List<Tuple> result = queryFactory.select(member.username, member.age, rankPath)
+                .from(member).orderBy(rankPath.desc())
+                .fetch();
+
+        result.forEach(t -> System.out.println(t.get(member.username)+t.get(member.age)+t.get(rankPath)));
     }
 }
