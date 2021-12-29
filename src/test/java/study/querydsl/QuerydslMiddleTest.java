@@ -73,8 +73,8 @@ public class QuerydslMiddleTest {
 
     @Test
     void findDtoByJPQL(){
-        List<MemberDto> result = em.createQuery("select new study.querydsl.dto.MemberDto(m.username, m.age) from Member m"
-                , MemberDto.class).getResultList();
+        String qlString = "select new study.querydsl.dto.MemberDto(m.username, m.age) from Member m";
+        List<MemberDto> result = em.createQuery(qlString, MemberDto.class).getResultList();
 
         result.forEach(System.out::println);
     }

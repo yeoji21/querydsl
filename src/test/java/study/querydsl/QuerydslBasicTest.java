@@ -175,6 +175,19 @@ public class QuerydslBasicTest {
                 .containsExactly("member1", "member2");
     }
 
+
+    @Test
+    void theta_join(){
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+
+        List<Member> result = queryFactory.select(member).from(member, team)
+                .where(member.username.eq(team.name)).fetch();
+
+        assertThat(result).extracting("username").containsExactly("teamA", "teamB");
+    }
+
+
     /*
     회원과 팀을 조인하면서, 팀 이름이 teamA인 팀만 조인, 회원은 모두 조회
     JPQL : select m, t from Member m left join m.team t on t.name ='teamA'
@@ -206,19 +219,6 @@ public class QuerydslBasicTest {
                 .fetch();
 
         result.forEach(System.out::println);
-    }
-
-    @Test
-    void fetch_join(){
-        em.flush();
-        em.clear();
-
-        Member findMember = queryFactory.selectFrom(member)
-                .join(member.team).fetchJoin()
-                .where(member.username.eq("member1"))
-                .fetchOne();
-
-        System.out.println(findMember.getTeam());
     }
 
     /*

@@ -44,17 +44,17 @@ test {
 	useJUnitPlatform()
 }
 
-//querydsl 추가 시작
-//def querydslDir = "$buildDir/generated/querydsl"
 
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
 	jpa = true
 	querydslSourcesDir = querydslDir
 }
+
 sourceSets {
 	main.java.srcDir querydslDir
 }
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -62,6 +62,7 @@ configurations {
 	querydsl.extendsFrom compileClasspath
 
 }
+
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
